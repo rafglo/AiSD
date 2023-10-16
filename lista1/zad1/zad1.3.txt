@@ -1,0 +1,4 @@
+Wykonujemy:
+- mnożenie n razy
+- dodawanie n razy
+T(n) = n + n = 2n = O(n)
