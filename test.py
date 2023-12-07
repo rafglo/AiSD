@@ -92,9 +92,9 @@ def tag_checker(text):
         return True
     else:
         print(S)
-    
-a = "<p><hr></p>"
-print(tag_checker(a))
-
+a = [12,3]
+b = [5,6]
+print(a+b)
+print(a)
 
 
