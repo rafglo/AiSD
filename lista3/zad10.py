@@ -34,50 +34,38 @@ class Queue_using_two_stacks():
         self.s2 = Stack()
 
     def is_empty(self):
-        return self.s1.is_empty() and self.s2.is_empty()
+        return self.s1.is_empty() 
 
     def enqueue(self, value):
-        if self.s1.is_empty():
-            self.s1.push(value)
-            for i in range(len(self.s2)):
-                self.s1.push(self.s2.pop())
-        else:
-            self.s2.push(value)
-            for i in range(len(self.s1)):
-                self.s1.push(self.s1.pop())
+        for i in range(len(self.s1)):
+            self.s2.push(self.s1.pop())
+        self.s1.push(value)
+        for i in range(len(self.s2)):
+            self.s1.push(self.s2.pop())
     
     def dequeue(self):
         if self.is_empty():
             raise Empty('Stack is empty')
         else:
-            if self.s1.is_empty():
-                self.s2.pop()
-            else:
-                self.s1.pop()
+            self.s1.pop()
     
     def __len__(self):
-        if self.s1.is_empty():
-            return len(self.s2)
-        else:
-            return len(self.s1)
+        return(len(self.s1))
 
     def first(self):
-        if self.s1.is_empty():
-            return self.s2.top()
-        else:
-            return self.s1.top()
+        return self.s1.top()
         
     def __str__(self):
-        if self.s1.is_empty():
-            return str(self.s2)
-        else:
-            return str(self.s1)
+        return str(self.s1)
 
         
 a = Queue_using_two_stacks()
 a.enqueue(2)
 a.enqueue(3)
-a.enqueue(5)
+print(a)
+a.enqueue(4)
+print(a)
+print(a.first())
 a.dequeue()
 print(a)
 

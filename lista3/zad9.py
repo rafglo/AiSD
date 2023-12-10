@@ -80,7 +80,7 @@ class Stack_using_queue():
             self.queue.enqueue(val)
         
     def top(self):
-        if self.is_empty:
+        if self.is_empty():
             raise Empty("Stack is empty")
         else:
             return self.queue.first()
@@ -97,8 +97,8 @@ class Stack_using_queue():
 s = Stack_using_queue()
 s.push(4)
 s.push(9)
-s.pop()
 print(s)
+print(s.top())
 
         
         
