@@ -92,9 +92,13 @@ def tag_checker(text):
         return True
     else:
         print(S)
-a = [12,3]
-b = [5,6]
-print(a+b)
-print(a)
+
+s = Stack()
+s.push(4)
+s.push(9)
+s.pop()
+print(s)
+
+print(list(range(3)))
 
 

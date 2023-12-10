@@ -62,10 +62,10 @@ def tag_checker(text):
     if S.is_empty():
         return True
     else:
-        False
+        print(S)
     
 
-print(tag_checker(sample3))
+print(tag_checker(sample2))
 
 
 

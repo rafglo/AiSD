@@ -19,9 +19,9 @@ def gen(start, koniec, n):
 
 
 import matplotlib.pyplot as plt
-import timeit
+import time
 
-def stoper(dlugosc_listy, indeksy):
+def stoper(inds, x, arr_len):
     """
     Function
     Funkcja Licząca czas wykonywania danej funkcji dla rosnących długości ciągów 
@@ -38,15 +38,22 @@ def stoper(dlugosc_listy, indeksy):
     czasy1(list) - lista z czasami odpowiadającymi kolejnym długościom 
     
     """
-    czasy1 = []
-    lista = gen(1,100, 10000)
-    for indeks in indeksy:
-        czasy1.append(timeit.timeit(lambda: lista.pop(indeks), number=100))
-    return czasy1
+    time_values = [] 
+    arr = [1 for i in range(arr_len)]
+    for ind in inds:
+        full_time = 0
+        for j in range(x):
+            start = time.time()
+            arr.pop(ind)
+            end = time.time()
+            full_time += end - start
+            arr.append(1)
+        time_values.append(full_time / x)
+    return time_values, inds
 
-czasy_e1 = stoper(100, [i for i in range(100, 1, -1)])
-xs = range(100, 1, -1)
-plt.plot(xs, czasy_e1, "ro")
+czasy, xs = stoper(range(0, 10**7, 10**6), 100, 10**7)
+print(len(czasy))
+plt.plot(xs, czasy, "ro")
 plt.xlabel("Indeks")
 plt.ylabel("Czas wykonania")
 plt.title("Eksperymentalna złożoność obliczeniowa funkcji pop")
