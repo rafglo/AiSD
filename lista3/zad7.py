@@ -62,7 +62,7 @@ def tag_checker(text):
     if S.is_empty():
         return True
     else:
-        print(S)
+        return S
     
 
 print(tag_checker(sample2))

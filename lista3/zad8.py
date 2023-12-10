@@ -30,7 +30,6 @@ class Stack:
         return str(self._data)
     
 def permutation(array):
-    n = 0
     S1 = Stack()
     S2 = Stack()
         
@@ -42,24 +41,32 @@ def permutation(array):
         while not S1.is_empty():
             cur_top = S1.top()
             for num in array:
-                if not num in cur_top:
-                    S2.push(cur_top + [num])
-                    n += 1
+                a = cur_top.copy()
+                if not num in a:
+                    a.append(num)
+                    S2.push(a)
             S1.pop()
 
-        if n == math.factorial(len(array)):
+        if len(S1) == math.factorial(len(array)) and len(S1.top()) == len(array):
+            return S1
+        elif len(S2) == math.factorial(len(array)) and len(S2.top()) == len(array):
             return S2
+        
         
         while not S2.is_empty():
             cur_top = S2.top()
             for num in array:
-                if not num in cur_top:
-                    S1.push(cur_top + [num])
-                    n += 1
+                a = cur_top.copy()
+                if not num in a:
+                    a.append(num)
+                    S1.push(a)
             S2.pop()
 
-        if n == math.factorial(len(array)):
+        if len(S1) == math.factorial(len(array)) and len(S1.top()) == len(array):
             return S1
+        elif len(S2) == math.factorial(len(array)) and len(S2.top()) == len(array):
+            return S2
+        
 
 
-print(permutation([1,2]))
+print(permutation([1,2,3,4]))

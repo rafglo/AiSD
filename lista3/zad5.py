@@ -49,9 +49,6 @@ class Queue:
         self._front = 0 
 
     def __str__(self):
-        """elements = [(self._data[(self._front + i) % len(self._data)]) for i in range(self._size)]
-        return f"Queue: {elements}"
-        """
         result = []
         for i in range(len(self._data)):
             if self._data[(self._front + i)%len(self._data)] is None:
