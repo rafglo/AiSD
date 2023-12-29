@@ -1,104 +1,63 @@
-import random
-a= ""
-b = "t"
-a = a + "t"
-print(a)
+import time
 
+class Node:
+    def __init__(self, data=None):
+        self.data = data
+        self.next = None
 
-""" def dequeue(self):
-        if self.is_empty():
-            raise Empty('Queue is empty')
-        value = self._data[self._front]
-        self._data[self._front] = None
-        self._front = (self._front+1)%len(self._data)
-        self._size -= 1
-        if self._size <= Queue.K * len(self._data) and len(self._data) > Queue.DEFAULT_CAPACITY:
-            if len(self._data) // 2 > Queue.DEFAULT_CAPACITY:
-                self.resize(len(self._data) // 2)
-            else:
-                self.resize(Queue.DEFAULT_CAPACITY)
-        return value"""
-
-sample1 = open(r"C:\Users\Rafal\OneDrive\Dokumenty\GitHub\AiSD\lista3\HTML_sample1.txt").read()
-sample2 = open(r"C:\Users\Rafal\OneDrive\Dokumenty\GitHub\AiSD\lista3\HTML_sample2.txt").read()
-sample3 = open(r"C:\Users\Rafal\OneDrive\Dokumenty\GitHub\AiSD\lista3\HTML_sample3.txt").read()
-
-
-class Empty(Exception):
- pass
-
-class Stack:
+class LinkedListStack:
     def __init__(self):
-        self._data = [] #nowy pusty stos
+        self.top = None
 
-    def __len__(self):
-        return len(self._data)
-
-    def is_empty(self):
-        return len(self._data)==0
-
-    def push(self,e):
-        self._data.append(e)
-
-    def top(self):
-        if self.is_empty():
-            raise Empty('Stack is empty')
-        return self._data[-1]
+    def push(self, data):
+        new_node = Node(data)
+        new_node.next = self.top
+        self.top = new_node
 
     def pop(self):
         if self.is_empty():
-            raise Empty('Stack is empty')
-        return self._data.pop() 
-    
-    def __str__(self):
-        return str(self._data)
-    
-def tag_checker(text):
-    voids = ["hr", "area", "base", "br", "col", "command", "embed", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr", "img", "view-source"]
-    left_o = "<"
-    right = ">"
-    S = Stack()
-    for i in range(len(text) - 1):
-        if text[i] == left_o and text[i+1] != "/" and text[i+1] != "!":
-            tag_name = ""
-            j = i + 1
-            while text[j] != right and text[j] != " ":
-                tag_name += text[j]
-                j += 1
-            else:
-                S.push(tag_name)
-                    
-        elif text[i] == left_o and text[i+1] == "/" and text[i+1] != "!":
-            tag_name = ""
-            j = i + 2
-            while text[j] != right and text[j] != " ":
-                tag_name += text[j]
-                j += 1
-            else:
-                if tag_name == S.top():
-                    S.pop()
-        elif text[i] == left_o and text[i+1] == "!":
-            j = i + 1
-            while text[j] != right and text[j] != " ":
-                if text[j] == left_o:
-                    return False
-                j += 1
+            return None
+        popped = self.top
+        self.top = self.top.next
+        popped.next = None
+        return popped.data
 
-    for k in range(len(S)):
-        if S.top() in voids or S.top()[:11] == "view-source":
-            S.pop()
-    
-    if S.is_empty():
-        return True
-    else:
-        print(S)
+    def top_element(self):
+        return self.top.data if self.top else None
 
-s = Stack()
-s.push(4)
-s.push(9)
-s.pop()
-print(s)
+    def is_empty(self):
+        return self.top is None
 
-print(list(range(3)))
+# Funkcja do przeprowadzenia analizy eksperymentalnej
+def experimental_analysis(stack_size):
+    stack = LinkedListStack()
 
+    # Pomiar czasu dla operacji push
+    start_time = time.time()
+    for i in range(stack_size):
+        stack.push(i)
+    push_time = time.time() - start_time
 
+    # Pomiar czasu dla operacji pop
+    start_time = time.time()
+    for _ in range(stack_size):
+        stack.pop()
+    pop_time = time.time() - start_time
+
+    # Pomiar czasu dla operacji top
+    start_time = time.time()
+    for _ in range(stack_size):
+        stack.top_element()
+    top_time = time.time() - start_time
+
+    return push_time, pop_time, top_time
+
+# Przeprowadzenie analizy eksperymentalnej dla różnych rozmiarów stosu
+stack_sizes = [10**3, 10**4, 10**5]
+for size in stack_sizes:
+    push_time, pop_time, top_time = experimental_analysis(size)
+    print(f"Stack Size: {size}")
+    print(f"Push Time: {push_time:.6f} seconds")
+    print(f"Pop Time: {pop_time:.6f} seconds")
+    print(f"Top Time: {top_time:.6f} seconds")
+    print("="*30)
