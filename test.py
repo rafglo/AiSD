@@ -61,3 +61,61 @@ for size in stack_sizes:
     print(f"Pop Time: {pop_time:.6f} seconds")
     print(f"Top Time: {top_time:.6f} seconds")
     print("="*30)
+
+
+class BinaryTreeUsingArray():
+
+
+    def __init__(self):
+        self.data = [None] 
+        self.size = 0
+        self.root = 0
+
+    def set_root(self, value):
+        if self.data[self.root] is not None:
+            raise RootError("Root already exists")
+        else:
+            self.data[self.root] = value
+        self.data += [None, None]
+        self.size += 1
+    
+    def add_left_child(self, parent_index, child_value):
+        child_index = 2 * parent_index + 1
+        if self.size == 1:
+            self.data += [None] * 2
+        elif len(self.data) < child_index:
+            self.data += [None] * 2 * (len(self.data) - 1)
+        if self.data[child_index] is not None:
+            raise ChildError("Child already exists")
+        else:
+            self.data[child_index] = child_value
+            self.size += 1
+    
+    def add_right_child(self, parent_index, child_value):
+        child_index = 2 * parent_index + 2
+        if self.size == 1:
+            self.data += [None] * 2
+        elif len(self.data) < child_index:
+            self.data += [None] * 2 * (len(self.data)-1)
+        if self.data[child_index] is not None:
+            raise ChildError("Child already exists")
+        else:
+            self.data[child_index] = child_value
+            self.size += 1
+
+    def get_right_child(self, parent_index):
+        child_index = 2 * parent_index + 2
+        if self.data[child_index] is None:
+            raise ChildError("Child doesn't exists")
+        else:
+            return self.data[child_index]
+    
+    def get_left_child(self, parent_index):
+        child_index = 2 * parent_index + 1
+        if self.data[child_index] is None:
+            raise ChildError("Child doesn't exists")
+        else:
+            return self.data[child_index]
+        
+    def __str__(self):
+        return str(self.data)
