@@ -6,6 +6,8 @@ class ChildError(Exception):
 
 class ParentError(Exception):
     pass
+class NodeError(Exception):
+    pass
 
 class BinaryTreeUsingArray():
 
@@ -72,6 +74,20 @@ class BinaryTreeUsingArray():
         else:
             return self.data[child_index]
         
+    def remove_node(self, index):
+        if index > len(self.data):
+            raise IndexError("Nie istnieje node o podanym indeksie")
+        elif self.data[index] == None:
+            raise NodeError("Nie istnieje node o podanym indeksie")
+        else:
+            replacement = None
+            for i in range(len(self.data) - 1, -1, -1):
+                if self.data[i] is not None:
+                    replacement = self.data[i]
+                    self.data[i] = None
+                    break
+            self.data[index] = replacement
+        
     def __str__(self):
         return str(self.data)
     
@@ -82,6 +98,6 @@ d.add_right_child(0,4)
 d.add_left_child(1,6)
 d.add_right_child(3,8)
 d.add_left_child(2, 5)
-d.add_left_child(4, 7)
+d.remove_node(2)
 print(d)
 print(len(d.data))
