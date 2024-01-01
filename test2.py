@@ -74,20 +74,45 @@ class BinaryTreeUsingArray():
         else:
             return self.data[child_index]
         
+    def has_left_child(self, parent_index):
+        child_index = 2 * parent_index + 1
+        if child_index > len(self.data):
+            return False
+        else:
+            if self.data[child_index] is None:
+                return False
+            else:
+                return True
+        
+    def has_right_child(self, parent_index):
+        child_index = 2 * parent_index + 2
+        if child_index > len(self.data):
+            return False
+        else:
+            if self.data[child_index] is None:
+                return False
+            else:
+                return True
+        
     def remove_node(self, index):
         if index > len(self.data):
             raise IndexError("Nie istnieje node o podanym indeksie")
         elif self.data[index] == None:
             raise NodeError("Nie istnieje node o podanym indeksie")
         else:
-            replacement = None
-            for i in range(len(self.data) - 1, -1, -1):
-                if self.data[i] is not None:
-                    replacement = self.data[i]
-                    self.data[i] = None
-                    break
-            self.data[index] = replacement
-        
+            family = [index]
+            cur_index = 0
+            left_child_index = 2 * index + 1
+            right_child_index = 2 * index + 2
+            while left_child_index < len(self.data) - 1:
+                family.append(left_child_index)
+                family.append(right_child_index)
+                cur_index += 1
+                left_child_index = 2 * family[cur_index] + 1
+                right_child_index = 2 * family[cur_index] + 2
+            for i in family:
+                self.data[i] = None
+
     def __str__(self):
         return str(self.data)
     
@@ -98,6 +123,7 @@ d.add_right_child(0,4)
 d.add_left_child(1,6)
 d.add_right_child(3,8)
 d.add_left_child(2, 5)
+d.add_right_child(5,10)
 d.remove_node(2)
 print(d)
 print(len(d.data))
