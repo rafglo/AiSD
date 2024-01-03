@@ -1,121 +1,99 @@
-import time
+class RootError(Exception):
+    pass
 
-class Node:
-    def __init__(self, data=None):
-        self.data = data
-        self.next = None
+class ChildError(Exception):
+    pass
 
-class LinkedListStack:
-    def __init__(self):
-        self.top = None
+class ParentError(Exception):
+    pass
 
-    def push(self, data):
-        new_node = Node(data)
-        new_node.next = self.top
-        self.top = new_node
+class NodeError(Exception):
+    pass
 
-    def pop(self):
-        if self.is_empty():
-            return None
-        popped = self.top
-        self.top = self.top.next
-        popped.next = None
-        return popped.data
+class TreeNode:
 
-    def top_element(self):
-        return self.top.data if self.top else None
+    def __init__(self, value, left_child=None, right_child=None):
+        self.value = value              # string, stored value
+        self.left_child = left_child    # None or TreeNode instance
+        self.right_child = right_child  # None or TreeNode instance
 
-    def is_empty(self):
-        return self.top is None
+    def get_value(self):
+        return self.value
 
-# Funkcja do przeprowadzenia analizy eksperymentalnej
-def experimental_analysis(stack_size):
-    stack = LinkedListStack()
+    def add_left_child(self, value):
+        self.left_child(TreeNode(value))
 
-    # Pomiar czasu dla operacji push
-    start_time = time.time()
-    for i in range(stack_size):
-        stack.push(i)
-    push_time = time.time() - start_time
+    def add_right_child(self, value):
+        self.add_right_child(TreeNode(value))
 
-    # Pomiar czasu dla operacji pop
-    start_time = time.time()
-    for _ in range(stack_size):
-        stack.pop()
-    pop_time = time.time() - start_time
-
-    # Pomiar czasu dla operacji top
-    start_time = time.time()
-    for _ in range(stack_size):
-        stack.top_element()
-    top_time = time.time() - start_time
-
-    return push_time, pop_time, top_time
-
-# Przeprowadzenie analizy eksperymentalnej dla różnych rozmiarów stosu
-stack_sizes = [10**3, 10**4, 10**5]
-for size in stack_sizes:
-    push_time, pop_time, top_time = experimental_analysis(size)
-    print(f"Stack Size: {size}")
-    print(f"Push Time: {push_time:.6f} seconds")
-    print(f"Pop Time: {pop_time:.6f} seconds")
-    print(f"Top Time: {top_time:.6f} seconds")
-    print("="*30)
-
-
-class BinaryTreeUsingArray():
-
-
-    def __init__(self):
-        self.data = [None] 
-        self.size = 0
-        self.root = 0
-
-    def set_root(self, value):
-        if self.data[self.root] is not None:
-            raise RootError("Root already exists")
+    def get_left_child(self):
+        if self.has_left_child is not None:
+            return self.left_child
         else:
-            self.data[self.root] = value
-        self.data += [None, None]
-        self.size += 1
-    
-    def add_left_child(self, parent_index, child_value):
-        child_index = 2 * parent_index + 1
-        if self.size == 1:
-            self.data += [None] * 2
-        elif len(self.data) < child_index:
-            self.data += [None] * 2 * (len(self.data) - 1)
-        if self.data[child_index] is not None:
-            raise ChildError("Child already exists")
-        else:
-            self.data[child_index] = child_value
-            self.size += 1
-    
-    def add_right_child(self, parent_index, child_value):
-        child_index = 2 * parent_index + 2
-        if self.size == 1:
-            self.data += [None] * 2
-        elif len(self.data) < child_index:
-            self.data += [None] * 2 * (len(self.data)-1)
-        if self.data[child_index] is not None:
-            raise ChildError("Child already exists")
-        else:
-            self.data[child_index] = child_value
-            self.size += 1
+            raise ChildError("Left child doesn't exist")
 
-    def get_right_child(self, parent_index):
-        child_index = 2 * parent_index + 2
-        if self.data[child_index] is None:
-            raise ChildError("Child doesn't exists")
+    def get_right_child(self):
+        if self.has_right_child:
+            return self.right_child
         else:
-            return self.data[child_index]
-    
-    def get_left_child(self, parent_index):
-        child_index = 2 * parent_index + 1
-        if self.data[child_index] is None:
-            raise ChildError("Child doesn't exists")
+            raise ChildError("Right child doesn't exist")
+
+    def has_left_child(self) -> bool:
+        if self.left_child is not None:
+            return True
         else:
-            return self.data[child_index]
-        
+            return False
+
+    def has_right_child(self) -> bool:
+        if self.right_child is not None:
+            return True
+        else:
+            return False
+
+    def is_leaf(self) -> bool:
+        if self.has_left_child or self.has_right_child:
+            return True
+        else:
+            return False
+
     def __str__(self):
-        return str(self.data)
+        return str(self.value)
+    
+
+def tokenize(raw):
+    SYMBOLS = set('+-x*/() ') # allow for '*' or 'x' for multiplication
+    mark = 0
+    tokens = []
+    n = len(raw)
+    for j in range(n):
+        if raw[j] in SYMBOLS:
+            if mark != j:
+                tokens.append(raw[mark:j]) # complete preceding token
+            if raw[j] != ' ':
+                tokens.append(raw[j]) # include this token
+            mark = j+1 # update mark to being at next index
+    if mark != n:
+        tokens.append(raw[mark:n]) # complete preceding token
+    return tokens
+
+def build_expression_tree(tokens):
+    S = [] # we use Python list as stack
+    for t in tokens:
+        if t in '+-x*/': # t is an operator symbol
+            S.append(t) # push the operator symbol
+        elif t not in '()': # consider t to be a literal
+            S.append(TreeNode(t)) # push trivial tree storing value
+        elif t == ')': # compose a new tree from three constituent parts
+            right = S.pop() # right subtree as per LIFO
+            op = S.pop() # operator symbol
+            left = S.pop() # left subtree
+            S.append(TreeNode(op, left, right)) # repush tree
+            # we ignore a left parenthesis
+    return S
+
+def derivative(expression):
+    tokens = tokenize(expression)
+    tree = build_expression_tree(tokens)
+    
+
+derivative("((5+4)*7)/9")
