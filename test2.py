@@ -1,78 +1,37 @@
+import numpy as np 
+import matplotlib.pyplot as plt
+def bubbleSort(arr):
+    xs = np.arange(0,len(arr),1)
+    n = len(arr)
+    # optimize code, so if the array is already sorted, it doesn't need
+    # to go through the entire process
+    swapped = False
+    # Traverse through all array elements
+    plt.bar(xs, arr)
+    plt.pause(0.001)
+    plt.clf()
 
-from collections import deque
+    for i in range(n-1):
+        # range(n) also work but outer loop will
+        # repeat one time more than needed.
+        # Last i elements are already in place
+        for j in range(0, n-i-1):
  
- 
-def swap (A, i, j):
-    temp = A[i]
-    A[i] = A[j]
-    A[j] = temp
- 
- 
-def partition(a, start, end):
- 
-    # Pick the rightmost element as a pivot from the list
-    pivot = a[end]
- 
-    # elements less than the pivot will go to the left of `pIndex`
-    # elements more than the pivot will go to the right of `pIndex`
-    # equal elements can go either way
-    pIndex = start
- 
-    # each time we find an element less than or equal to the pivot,
-    # `pIndex` is incremented, and that element would be placed
-    # before the pivot.
-    for i in range(start, end):
-        if a[i] <= pivot:
-            swap(a, i, pIndex)
-            pIndex = pIndex + 1
- 
-    # swap `pIndex` with pivot
-    swap(a, pIndex, end)
- 
-    # return `pIndex` (index of the pivot element)
-    return pIndex
- 
- 
-# Iterative Quicksort routine
-def iterativeQuicksort(a):
- 
-    # create a stack for storing sublist start and end index
-    stack = deque()
- 
-    # get the starting and ending index of a given list
-    start = 0
-    end = len(a) - 1
- 
-    # push the start and end index of the array into the stack
-    stack.append((start, end))
- 
-    # loop till stack is empty
-    while stack:
- 
-        # remove top pair from the list and get sublist starting
-        # and ending indices
-        start, end = stack.pop()
- 
-        # rearrange elements across pivot
-        pivot = partition(a, start, end)
- 
-        # push sublist indices containing elements that are
-        # less than the current pivot to stack
-        if pivot - 1 > start:
-            stack.append((start, pivot - 1))
- 
-        # push sublist indices containing elements that are
-        # more than the current pivot to stack
-        if pivot + 1 < end:
-            stack.append((pivot + 1, end))
- 
- 
-# Iterative Implementation of Quicksort
-if __name__ == '__main__':
- 
-    a = [9, -3, 5, 2, 6, 8, -6, 1, 3]
- 
-    iterativeQuicksort(a)
- 
-    # print the sorted list
-    print(a)
+            # traverse the array from 0 to n-i-1
+            # Swap if the element found is greater
+            # than the next element
+            if arr[j] > arr[j + 1]:
+                swapped = True
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                plt.bar(xs, arr)
+                plt.pause(0.001)
+                plt.clf()
+         
+        if not swapped:
+            # if we haven't needed to make a single swap, we 
+            # can just exit the main loop.
+            return 
+array = [64, 34, 25, 12, 22, 11, 90]
+bubbleSort(array)
+plt.bar(np.arange(0,len(array),1), array)
+plt.show()
