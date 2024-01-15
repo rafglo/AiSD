@@ -13,7 +13,7 @@ def bubbleSort(arr):
     plt.savefig(r"C:\Users\Rafal\OneDrive\Dokumenty\GitHub\AiSD\lista5\frames\fig0")
     plt.clf()
 
-    n = 0
+    k = 0
 
     for i in range(n-1):
         # range(n) also work but outer loop will

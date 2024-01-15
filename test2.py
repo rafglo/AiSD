@@ -1,37 +1,70 @@
-import numpy as np 
-import matplotlib.pyplot as plt
-def bubbleSort(arr):
-    xs = np.arange(0,len(arr),1)
-    n = len(arr)
-    # optimize code, so if the array is already sorted, it doesn't need
-    # to go through the entire process
-    swapped = False
-    # Traverse through all array elements
-    plt.bar(xs, arr)
-    plt.pause(0.001)
-    plt.clf()
+class Vertex():
+    def __init__(self, key):
+        self.id = key
+        self.neighbors = {}
 
-    for i in range(n-1):
-        # range(n) also work but outer loop will
-        # repeat one time more than needed.
-        # Last i elements are already in place
-        for j in range(0, n-i-1):
- 
-            # traverse the array from 0 to n-i-1
-            # Swap if the element found is greater
-            # than the next element
-            if arr[j] > arr[j + 1]:
-                swapped = True
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-                plt.bar(xs, arr)
-                plt.pause(0.001)
-                plt.clf()
-         
-        if not swapped:
-            # if we haven't needed to make a single swap, we 
-            # can just exit the main loop.
-            return 
-array = [64, 34, 25, 12, 22, 11, 90]
-bubbleSort(array)
-plt.bar(np.arange(0,len(array),1), array)
-plt.show()
+    def add_neighbor(self, value, weight):
+        self.neighbors[value] = weight
+    
+    def __str__(self):
+        return "Node: " + str(self.id) + " Neighbors: " + str([i.id for i in self.neigbors])
+
+    def get_neighbors(self):
+        return [i.id for i in self.neighbors]
+    
+    def get_id(self):
+        return self.id
+    
+    def get_weight(self, neighbor):
+        return self.neighbors[neighbor]
+
+
+class Graph(Vertex):
+    def __init__(self):
+        self.vertices = {}
+        self.size = 0
+
+    def add_vertex(self, vert_key):
+        vertex = Vertex(vert_key)
+        self.vertices[vert_key] = vertex
+        self.size += 1
+        return vertex
+    
+    def __contains__(self, vert_key):
+        return vert_key in self.vertices
+    
+    def vertex(self, vert_key):
+        if vert_key in self.vertices:
+            return self.vertices[vert_key]
+        else:
+            return None
+        
+    def get_neighbors(self, vert_key):
+        if vert_key in self.vertices:
+            return self.vertices[vert_key].get_neighbors()
+        else:
+            return None
+
+    def get_vertices(self):
+        return [x for x in self.vertices]
+    
+    def add_edge(self, from_key, to_key, weight=0):
+        if from_key not in self.vertices:
+            self.add_vertex(from_key)
+        if to_key not in self.vertices:
+            self.add_vertex(to_key)
+        self.vertices[from_key].add_neighbor(self.vertices[to_key], weight)
+    
+    def get_edges(self):
+        edges = {}
+        for vert in self.vertices:
+            neighbors = self.vertices[vert].get_neighbors()
+            if not neighbors is None:
+                for n in neighbors:
+                    edges[vert] = n
+        return edges
+
+g = Graph()
+g.add_vertex("a")
+g.add_edge("a", "b")
+print(g.get_edges())
