@@ -1,51 +1,63 @@
-from collections import defaultdict
-class Graph:
-    def __init__(self, directed=False):
-        self.graph = defaultdict(list)
-        self.directed = directed
-
-    def Edge(self, frm, to):
-        self.graph[frm].append(to)
-
-        if self.directed is False:
-            self.graph[to].append(frm)
-        else:
-            self.graph[to] = self.graph[to]
-
-    def visit(self, s, visited, sortlist):
-        visited[s] = True
-
-        for i in self.graph[s]:
-            if not visited[i]:
-                self.visit(i, visited, sortlist)
-
-        sortlist.insert(0, s)
-
-    def topological_Sort(self):
-        visited = {i: False for i in self.graph}
-
-        sortlist = []
-       
-        for v in self.graph:
-            if not visited[v]:
-                self.visit(v, visited, sortlist)
-
-        print(sortlist)
-
-#driver code
-if __name__ == '__main__':
- 
-    g = Graph(directed=True)
-
-    g.Edge(0, 1)
-    g.Edge(0, 2)
-    g.Edge(1, 2)
-    g.Edge(2, 0)
-    g.Edge(2, 3)
-    g.Edge(3, 4)
-    g.Edge(4, 7)
-    g.Edge(7, 8)
-    g.Edge(2,12)
-    
-    print("The Result after Topological Sort:")
-    g.topological_Sort()
+from collections import defaultdict 
+  
+# This class represents a directed graph 
+# using adjacency list representation 
+class Graph: 
+  
+    # Constructor 
+    def __init__(self): 
+  
+        # default dictionary to store graph 
+        self.graph = defaultdict(list) 
+  
+    # function to add an edge to graph 
+   # Make a list visited[] to check if a node is already visited or not 
+    def addEdge(self,u,v): 
+        self.graph[u].append(v) 
+        self.visited=[] 
+  
+    # Function to print a BFS of graph 
+    def BFS(self, s): 
+  
+        # Create a queue for BFS 
+        queue = [] 
+  
+        # Add the source node in 
+        # visited and enqueue it 
+        queue.append(s) 
+        self.visited.append(s) 
+  
+        while queue: 
+  
+            # Dequeue a vertex from  
+            # queue and print it 
+            s = queue.pop(0) 
+            print (s, end = " ") 
+  
+            # Get all adjacent vertices of the 
+            # dequeued vertex s. If a adjacent 
+            # has not been visited, then add it 
+            # in visited and enqueue it 
+            for i in self.graph[s]: 
+                if i not in self.visited: 
+                    queue.append(i) 
+                    self.visited.append(s) 
+  
+# Driver code 
+  
+# Create a graph given in 
+# the above diagram 
+g = Graph() 
+g.addEdge(0, 1)
+g.addEdge(1, 2)
+g.addEdge(2, 0)
+g.addEdge(2, 3)
+g.addEdge(2, 12)
+g.addEdge(3, 4)
+g.addEdge(4, 7)
+g.addEdge(4, 3)
+g.addEdge(7, 8)
+  
+print ("Following is Breadth First Traversal"
+                  " (starting from vertex 2)") 
+g.BFS(2) 

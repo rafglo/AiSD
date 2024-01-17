@@ -19,6 +19,17 @@ class Vertex():
     def get_weight(self, neighbor):
         return self.neighbors[neighbor]
 
+    def set_distance(self, d):
+        self.dist = d
+    
+    def get_distance(self):
+        return self.dist
+    
+    def set_pred(self,p):
+        self.pred = p
+
+    def get_pred(self):
+        return self.pred
 
 class Empty(Exception):
     pass
@@ -139,16 +150,32 @@ class Graph(Vertex):
         
     def bfs(self, start):
         visited = [start]
+        self.vertices[start].set_distance(0)
+        self.vertices[start].set_pred(None)
         q = []
         q.append(start)
         while len(q):
-            vert = q.pop()
+            vert = q.pop(0)
             neighbors = self.vertices[vert].get_neighbors()
             for neighbor in neighbors:
                 if not neighbor in visited:
                     q.append(neighbor)
                     visited.append(neighbor)
-        return visited
+                    self.vertices[neighbor].set_distance(self.vertices[vert].get_distance() + 1)
+                    self.vertices[neighbor].set_pred(vert)
+
+        dists = []
+        preds = []
+        for vert in visited:
+            preds1 = [vert]
+            dists.append(self.vertices[vert].get_distance())
+            pred = self.vertices[vert].get_pred()
+            while pred != None:
+                preds1.append(pred)
+                pred = self.vertices[pred].get_pred()
+            preds.append(preds1[::-1])
+
+        return visited, dists, preds
 
     def dfs(self, start, visited = []):
         if not start in visited:
@@ -177,19 +204,29 @@ class Graph(Vertex):
                 self.dfs_topological_sort(vert, stack, visited)
         
         return stack[::-1]
+    
+    def shortest_paths(self, vert):
+        verts, dists, paths = self.bfs(vert)
+        for i in range(len(verts)):
+            path = ""
+            for j in range(len(paths[i])):
+                if j != len(paths[i]) - 1:
+                    path += str(paths[i][j]) + " -> "
+                else:
+                    path += str(paths[i][j])
+            print("Shortest distance from " + str(vert) + " to " + str(verts[i]) + " is " + str(dists[i]) + ". Path: " + path)
+
 
 g = Graph()
 g.add_edge(0, 1)
-g.add_edge(0, 2)
-g.add_edge(1, 2)
+g.add_edge(1, 12)
 g.add_edge(2, 0)
 g.add_edge(2, 3)
+g.add_edge(2,1)
 g.add_edge(3, 4)
-g.add_edge(4,6)
-g.add_edge(6,9)
-g.add_edge(6,10)
-g.add_edge(2, 5)
+g.add_edge(4, 7)
+g.add_edge(4, 12)
+g.add_edge(7, 8)
 print(g.bfs(2))
-print(g.dfs(2))
-g.visualize()
-print(g.topological_sort())
+g.shortest_paths(2)
+
