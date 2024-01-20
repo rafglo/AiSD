@@ -217,16 +217,50 @@ class Graph(Vertex):
             print("Shortest distance from " + str(vert) + " to " + str(verts[i]) + " is " + str(dists[i]) + ". Path: " + path)
 
 
-g = Graph()
-g.add_edge(0, 1)
-g.add_edge(1, 12)
-g.add_edge(2, 0)
-g.add_edge(2, 3)
-g.add_edge(2,1)
-g.add_edge(3, 4)
-g.add_edge(4, 7)
-g.add_edge(4, 12)
-g.add_edge(7, 8)
-print(g.bfs(2))
-g.shortest_paths(2)
+G = Graph()
+G.add_vertex((3,3,1))
 
+def boat_ok(a):
+    boat = a[2]
+    if boat in [1,0]:
+        return True
+    else:
+        return False
+    
+def missionaries_ok(a):
+    mis = a[0]
+    can = a[1]
+    if mis in [0,1,2,3] and can in [0,1,2,3]:
+        if mis >= can:
+            return True
+        else:
+            return False
+    else:
+        return False
+    
+positions = [(1,0,1), (2,0,1), (0,1,1), (0,2,1), (1,1,1)]
+
+run = True
+past_states = []
+while run:
+    routes = G.bfs((3,3,1))[0]
+    for route in routes:
+        if len(G.get_neighbors(route)) == 0:
+            for pos in positions:
+                if route[2] == 0:
+                    b = (route[0]+pos[0], route[1]+pos[1], route[2]+pos[2])
+                    if boat_ok(b) and missionaries_ok(b):
+                        if not b in past_states:
+                            G.add_edge(route, b)
+                            past_states.append(b)
+                            if b == (0,0,0):
+                                run = False
+                if route[2] == 1:
+                    a = (route[0]-pos[0], route[1]-pos[1], route[2]-pos[2])
+                    if boat_ok(a) and missionaries_ok(a):
+                        if not a in past_states:
+                            G.add_edge(route, a)
+                            past_states.append(a)
+                            if a == (0,0,0):
+                                run = False
+print(G.bfs((3,3,1))[0])
