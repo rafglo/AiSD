@@ -1,1 +1,1 @@
-Solutions to tasks included in the Algorithms and Data Structures course
+#Solutions to tasks included in the Algorithms and Data Structures course
